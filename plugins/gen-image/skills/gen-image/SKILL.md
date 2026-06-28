@@ -12,6 +12,8 @@ allowed-tools:
 
 Generate standalone images via the `gen-image` CLI. This skill is for **explicit, user-requested generation**, single or batch, and returns image links ready to paste into a note or document.
 
+It does one thing: prompt in, image file(s) out, link returned. It is the generation primitive. Planning an image narrative and embedding it into a specific note is a separate, higher-level workflow that typically *wraps* this skill, not part of it.
+
 ## Prerequisites
 
 This skill shells out to a CLI called `gen-image` ([github.com/grepinsight/gen-image](https://github.com/grepinsight/gen-image)). Install it and set an API key before use:
@@ -44,7 +46,7 @@ SKILL_CFG="${GEN_IMAGE_SKILL_CONFIG:-$HOME/.config/gen-image/skill.toml}"
 [ -f "$SKILL_CFG" ] && echo "found: $SKILL_CFG" || echo "none (using built-in defaults)"
 ```
 
-If it exists, `Read` it and let its values override the defaults below. Every key is optional; anything unset falls back to the built-in default. The schema (link format, output resolution, model map, costs, sibling-skill routing, extended reference) is documented in `references/skill-config.md`. **If no config file is present, the built-in defaults make this skill fully functional on their own.**
+If it exists, `Read` it and let its values override the defaults below. Every key is optional; anything unset falls back to the built-in default. The schema (link format, output resolution, model map, costs, extended reference) is documented in `references/skill-config.md`. **If no config file is present, the built-in defaults make this skill fully functional on their own.**
 
 | Config key | Controls | Built-in default |
 |---|---|---|
@@ -53,20 +55,7 @@ If it exists, `Read` it and let its values override the defaults below. Every ke
 | `output.standalone_dir` | Output dir when not bound to a note | the current working directory |
 | `models.*` | Concrete model ids per use-case (see Model Selection) | none (reason by model class) |
 | `cost.<model-id>` | Per-image USD cost for the cost note | none (use the generic estimate) |
-| `routing.*` | Sibling skills to defer to (see When NOT to Use) | none (this skill stands alone) |
 | `extended_reference` | Path to an extra prompt/style reference to consult | none |
-
-## When NOT to Use (only if routing is configured)
-
-If `[routing]` is set in the config, defer to those skills instead of generating here:
-
-| Situation | Defer to (config key) |
-|---|---|
-| Adding images **into** a specific note (during creation or enrichment) | `routing.note_embed` |
-| Finding **real** web photos / screenshots | `routing.web_photos` |
-| Consolidating pre-existing scattered images for a note | `routing.migrate` |
-
-When a routing key is unset, this skill simply handles the request itself.
 
 ## Defaults
 
@@ -224,9 +213,9 @@ If the user asks to change the default model/provider:
 2. Edit it with the `Edit` tool (not `sed`)
 3. Confirm with `gen-image --show-config`
 
-To change this skill's behavior (link format, output dirs, model map, routing), edit the skill config file (`references/skill-config.md` documents every key).
+To change this skill's behavior (link format, output dirs, model map), edit the skill config file (`references/skill-config.md` documents every key).
 
 ## Related
 
-- `references/skill-config.md`: the optional skill config schema (link format, output, models, cost, routing, extended reference).
+- `references/skill-config.md`: the optional skill config schema (link format, output, models, cost, extended reference).
 - `references/prompt-patterns.md`: reusable prompt templates, naming, and embedding rules.

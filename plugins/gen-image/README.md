@@ -31,7 +31,7 @@ gen-image --show-config | grep -E "provider|model"
 
 ## Configuration
 
-The plugin works out of the box with sane defaults. To adapt it to a personal note system (custom output dirs, a model map, sibling-skill routing, Obsidian wikilinks), drop in an **optional** config file.
+The plugin works out of the box with sane defaults. To adapt it to a personal note system (custom output dirs, a model map, Obsidian wikilinks), drop in an **optional** config file.
 
 ### Environment
 
@@ -49,7 +49,6 @@ The plugin works out of the box with sane defaults. To adapt it to a personal no
 | `output.standalone_dir` | Output dir when not bound to a note | current directory |
 | `models.*` | Concrete model ids per use-case (`text_heavy`, `photoreal`, `fast_cheap`, `bulk_no_text`, `default`) | reason by model class |
 | `cost.<model-id>` | Per-image USD cost for an exact cost note | generic $0.01–$0.04 estimate |
-| `routing.*` | Sibling skills to defer to (`note_embed`, `web_photos`, `migrate`) | this skill handles it |
 | `extended_reference` | Path to an extra prompt/style reference (e.g. a style-to-dimension map) | none |
 
 Full schema and behavior: [`skills/gen-image/references/skill-config.md`](skills/gen-image/references/skill-config.md). The model itself is global CLI config (`gen-image --edit-config`), there is no per-call `--model` flag.

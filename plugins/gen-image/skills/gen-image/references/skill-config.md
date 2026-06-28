@@ -53,12 +53,6 @@ default      = ""   # the model you keep active by default
 # "gemini-3-pro-image-preview"     = 0.04
 # "gpt-image-1.5"                  = 0.04
 # "gemini-3.1-flash-image-preview" = 0.01
-
-[routing]
-# Sibling skills to defer to (the "when NOT to use this skill" map). All optional.
-note_embed = ""   # skill that adds images INTO a specific note (creation or enrichment)
-web_photos = ""   # skill that finds real web photos / screenshots
-migrate    = ""   # skill that consolidates pre-existing scattered images for a note
 ```
 
 ## Behavior summary
@@ -70,5 +64,4 @@ migrate    = ""   # skill that consolidates pre-existing scattered images for a 
 | `output.standalone_dir` | Output here when not note-bound | current working directory |
 | `models.*` | Prefer these exact model ids | Reason by model class |
 | `cost.<id>` | Exact per-image total | Generic $0.01–$0.04 estimate |
-| `routing.*` | Defer matching requests to that skill | Handle the request here |
 | `extended_reference` | `Read` and apply its recipes | Use only the built-in style table |

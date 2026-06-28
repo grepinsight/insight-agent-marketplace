@@ -1,6 +1,6 @@
 {
   "name": "gen-image",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Generate one or more educational/explanatory images from a text prompt via the gen-image CLI and return ready-to-paste image links. For explicit, user-requested generation (single or batch).",
   "author": {
     "name": "grepinsight",
