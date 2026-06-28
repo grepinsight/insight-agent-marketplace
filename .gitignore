@@ -1,0 +1,8 @@
+.DS_Store
+*.log
+
+# generated image outputs (in case anyone runs the skill from inside the repo)
+assets/
+*.png
+*.jpg
+*.jpeg

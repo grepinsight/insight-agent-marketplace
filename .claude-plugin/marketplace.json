@@ -1,0 +1,21 @@
+{
+  "name": "insight",
+  "owner": {
+    "name": "grepinsight",
+    "url": "https://github.com/grepinsight"
+  },
+  "metadata": {
+    "description": "A small marketplace of focused Claude Code plugins.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "gen-image",
+      "source": "./plugins/gen-image",
+      "description": "Generate educational/explanatory images from a text prompt via the gen-image CLI and get back ready-to-paste image links. Single or batch.",
+      "version": "0.1.0",
+      "category": "content",
+      "keywords": ["image-generation", "illustration", "obsidian", "infographic", "gemini", "openai"]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "gen-image",
+  "version": "0.1.0",
+  "description": "Generate one or more educational/explanatory images from a text prompt via the gen-image CLI and return ready-to-paste image links. For explicit, user-requested generation (single or batch).",
+  "author": {
+    "name": "grepinsight",
+    "url": "https://github.com/grepinsight"
+  },
+  "homepage": "https://github.com/grepinsight/insight-claude-marketplace",
+  "license": "MIT",
+  "keywords": ["image-generation", "illustration", "obsidian", "infographic", "gemini", "openai"]
+}
