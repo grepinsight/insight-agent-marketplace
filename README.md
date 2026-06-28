@@ -29,20 +29,29 @@ Or point at a local clone during development:
 
 ### Option B, `npx skills` (cross-agent, recommended)
 
-This repo is also a [Vercel **skills**](https://github.com/vercel-labs/skills) package. The `skills` CLI installs the skill into any supported agent (Claude Code, Codex, Cursor, OpenClaw, Hermes, and ~70 more), discovering it straight from the plugin manifests, no extra structure needed.
+This repo is also a [Vercel **skills**](https://github.com/vercel-labs/skills) package. The `skills` CLI installs into any supported agent (Claude Code, Codex, Cursor, OpenClaw, Hermes, and ~70 more), discovering skills straight from the plugin manifests, no extra structure needed.
+
+Install **one plugin at a time** with `-s <skill>` (this is the recommended default, you never need to pull the whole repo):
 
 ```bash
-# interactive picker (auto-detects your agent + scope)
-npx skills add grepinsight/insight-claude-marketplace
-
-# install a specific skill, non-interactive
+# install just the gen-image skill, non-interactive
 npx skills add grepinsight/insight-claude-marketplace -s gen-image -y
 
 # preview what's in the repo without installing
 npx skills add grepinsight/insight-claude-marketplace --list
 ```
 
-`-g` installs globally (user-level) instead of into the current project. After installing either way, restart your agent so the new skill is picked up. Note: installing the skill does **not** install the underlying `gen-image` CLI, see the [plugin's README](plugins/gen-image#prerequisites) for prerequisites.
+Other granularities, if you want them:
+
+```bash
+# interactive picker (choose which skills to install)
+npx skills add grepinsight/insight-claude-marketplace
+
+# every skill in the repo at once (explicit opt-in)
+npx skills add grepinsight/insight-claude-marketplace --all
+```
+
+`-g` installs globally (user-level) instead of into the current project. After installing, restart your agent so the new skill is picked up. Note: installing the skill does **not** install the underlying `gen-image` CLI, see the [plugin's README](plugins/gen-image#prerequisites) for prerequisites.
 
 ## Installing for AI agents
 
