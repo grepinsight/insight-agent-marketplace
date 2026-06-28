@@ -14,9 +14,9 @@ The skill picks a sensible style, writes good prompts (see `skills/gen-image/ref
 
 ## Prerequisites
 
-This plugin is a thin orchestration layer over a separate CLI named `gen-image`. You need:
+This plugin is a thin orchestration layer over a separate CLI named `gen-image` ([grepinsight/gen-image](https://github.com/grepinsight/gen-image)). You need:
 
-1. The `gen-image` CLI on your `PATH` (a wrapper over Google Gemini / OpenAI image models).
+1. The `gen-image` CLI on your `PATH` (a wrapper over Google Gemini / OpenAI image models). Install it from [github.com/grepinsight/gen-image](https://github.com/grepinsight/gen-image).
 2. An API key, either exported in your environment or stored in `~/.config/gen-image/.env`:
 
    ```

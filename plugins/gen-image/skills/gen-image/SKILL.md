@@ -14,9 +14,9 @@ Generate standalone images via the `gen-image` CLI. This skill is for **explicit
 
 ## Prerequisites
 
-This skill shells out to a CLI called `gen-image`. Install it and set an API key before use:
+This skill shells out to a CLI called `gen-image` ([github.com/grepinsight/gen-image](https://github.com/grepinsight/gen-image)). Install it and set an API key before use:
 
-- The `gen-image` CLI on `PATH` (a typer-based wrapper over Google Gemini / OpenAI image models).
+- The `gen-image` CLI on `PATH` (a typer-based wrapper over Google Gemini / OpenAI image models), from [github.com/grepinsight/gen-image](https://github.com/grepinsight/gen-image).
 - An API key in the environment or in `~/.config/gen-image/.env` (recognized keys: `GEMINI_API_KEY`, `GOOGLE_API_KEY`, `OPENAI_API_KEY`).
 
 Verify the tool is reachable:
