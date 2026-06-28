@@ -20,6 +20,12 @@ Every key is optional. Unset keys fall back to the built-in default.
 # Default: "markdown"
 link_format = "markdown"
 
+# Optional path to an extended prompt/style reference the skill should consult,
+# e.g. a style-to-dimension mapping for your own note system.
+# NOTE: this is a TOP-LEVEL key — in TOML a bare key must appear BEFORE any [table]
+# header, otherwise it gets nested into that table. Keep it up here.
+extended_reference = ""
+
 [output]
 # Optional command to resolve the output dir for a NOTE-bound generation.
 # Invoked as:  <note_resolver> "<note-path>"   and must print the absolute output dir on stdout.
@@ -53,10 +59,6 @@ default      = ""   # the model you keep active by default
 note_embed = ""   # skill that adds images INTO a specific note (creation or enrichment)
 web_photos = ""   # skill that finds real web photos / screenshots
 migrate    = ""   # skill that consolidates pre-existing scattered images for a note
-
-# Optional path to an extended prompt/style reference the skill should consult,
-# e.g. a style-to-dimension mapping for your own note system.
-extended_reference = ""
 ```
 
 ## Behavior summary
