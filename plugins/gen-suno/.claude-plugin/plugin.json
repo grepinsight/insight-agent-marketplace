@@ -1,0 +1,12 @@
+{
+  "name": "gen-suno",
+  "version": "0.1.0",
+  "description": "Write Suno-ready song lyrics and generate the audio via the gen-suno CLI. Two modes: one-off songs about any topic, or a chained prerequisite album engineered for memorization with clearly-enunciated, intelligible vocals.",
+  "author": {
+    "name": "grepinsight",
+    "url": "https://github.com/grepinsight"
+  },
+  "homepage": "https://github.com/grepinsight/insight-agent-marketplace",
+  "license": "MIT",
+  "keywords": ["suno", "music-generation", "lyrics", "songwriting", "learning", "memorization", "audio"]
+}

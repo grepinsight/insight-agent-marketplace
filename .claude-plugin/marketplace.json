@@ -16,6 +16,14 @@
       "version": "0.1.0",
       "category": "content",
       "keywords": ["image-generation", "illustration", "obsidian", "infographic", "gemini", "openai"]
+    },
+    {
+      "name": "gen-suno",
+      "source": "./plugins/gen-suno",
+      "description": "Write Suno-ready song lyrics and generate the audio via the gen-suno CLI. One-off songs about any topic, or a chained prerequisite album engineered for memorization with clearly-enunciated vocals.",
+      "version": "0.1.0",
+      "category": "content",
+      "keywords": ["suno", "music-generation", "lyrics", "songwriting", "learning", "memorization", "audio"]
     }
   ]
 }
