@@ -35,25 +35,62 @@ If `gen-image` is not found, tell the user to install it and set a key, then sto
 - "regenerate the images in this note" (after a model switch)
 - "create visuals for this concept"
 
+## Step 0, Load Skill Config (do this first)
+
+This skill is configurable so it can adapt to a personal note system without hardcoding anyone's paths. Before anything else, look for an optional config file and apply it:
+
+```bash
+SKILL_CFG="${GEN_IMAGE_SKILL_CONFIG:-$HOME/.config/gen-image/skill.toml}"
+[ -f "$SKILL_CFG" ] && echo "found: $SKILL_CFG" || echo "none (using built-in defaults)"
+```
+
+If it exists, `Read` it and let its values override the defaults below. Every key is optional; anything unset falls back to the built-in default. The schema (link format, output resolution, model map, costs, sibling-skill routing, extended reference) is documented in `references/skill-config.md`. **If no config file is present, the built-in defaults make this skill fully functional on their own.**
+
+| Config key | Controls | Built-in default |
+|---|---|---|
+| `link_format` | Emitted reference style: `wikilink` or `markdown` | `markdown` |
+| `output.note_resolver` | Command that resolves a note's output dir | none (use `assets/` beside the note) |
+| `output.standalone_dir` | Output dir when not bound to a note | the current working directory |
+| `models.*` | Concrete model ids per use-case (see Model Selection) | none (reason by model class) |
+| `cost.<model-id>` | Per-image USD cost for the cost note | none (use the generic estimate) |
+| `routing.*` | Sibling skills to defer to (see When NOT to Use) | none (this skill stands alone) |
+| `extended_reference` | Path to an extra prompt/style reference to consult | none |
+
+## When NOT to Use (only if routing is configured)
+
+If `[routing]` is set in the config, defer to those skills instead of generating here:
+
+| Situation | Defer to (config key) |
+|---|---|
+| Adding images **into** a specific note (during creation or enrichment) | `routing.note_embed` |
+| Finding **real** web photos / screenshots | `routing.web_photos` |
+| Consolidating pre-existing scattered images for a note | `routing.migrate` |
+
+When a routing key is unset, this skill simply handles the request itself.
+
 ## Defaults
 
 | Thing | Default | Override |
 |---|---|---|
-| Output dir | `$GEN_IMAGE_OUTPUT_DIR` if set; else, when bound to a note, an `assets/` folder beside the note; else the current working directory | Ask only when context is genuinely ambiguous |
+| Output dir | `output.note_resolver` if note-bound and configured; else `assets/` beside the note; else `output.standalone_dir`; else cwd | Ask only when context is genuinely ambiguous |
 | Filename slug | `<topic-kebab>-<index>.png` or a descriptive per-image name | User can specify |
 | Style | Auto-select from the presets below based on content | `--style <preset>` |
 | Model | Active config (`gen-image --show-config`) | `gen-image --edit-config` (global, there is **no** per-call `--model` flag) |
+| Link format | `config.link_format`, else `markdown` | per request |
 | Parallelism | All in parallel when N>1 | — |
 
 ## Model Selection (has a real quality delta)
 
-| Model class | Use when |
-|---|---|
-| **Gemini "pro image"** | **Data viz / infographics / any image with labels, numbers, or text.** Gemini Pro has the best text rendering by a wide margin. |
-| OpenAI `gpt-image` | Photorealistic or painterly subject matter, where text is absent or incidental. |
-| Gemini "flash image" | Fast/cheap iterations where quality is secondary. |
+There is **no per-call `--model` flag**, the model is global config. The skill's job is to make sure the *active* model fits the task. If the config provides concrete model ids under `[models]`, prefer those exact ids; otherwise reason by model class.
 
-Before generating, ask yourself: **"Does this image need legible text/numbers?"** If yes, make sure the active model is a Gemini pro-image model. There is **no per-call `--model` flag**, the model is global config. Verify with `gen-image --show-config` (or `gen-image --list-models`, which marks the active one). If it has been changed, reset via `gen-image --edit-config`.
+| Use-case | Config key | Class fallback (no config) |
+|---|---|---|
+| **Data viz / infographics / any image with labels, numbers, or text** | `models.text_heavy` | a Gemini "pro image" model (best text rendering by a wide margin) |
+| Photorealistic or painterly subject, text absent or incidental | `models.photoreal` | an OpenAI `gpt-image` model |
+| Fast / cheap iterations, quality secondary | `models.fast_cheap` | a Gemini "flash image" model |
+| Cost-sensitive bulk, no text | `models.bulk_no_text` | a smaller/mini image model |
+
+Before generating, ask: **"Does this image need legible text/numbers?"** If yes, make sure the active model is the text-heavy one (`models.text_heavy`, or a Gemini pro-image model). Verify with `gen-image --show-config` (or `gen-image --list-models`, which marks the active one). If it has been changed, reset via `gen-image --edit-config`.
 
 Check current config once per session:
 
@@ -72,6 +109,8 @@ gen-image --show-config | grep -E "provider|model"
 | `manga-strip` | Educational storytelling, 2x4 panel comic narrative, step-by-step walkthroughs |
 | `vintage-blueprint` | History of inventions, underlying principles, design rationale, patent-style diagrams |
 | `custom` | Only when the user provides a full style spec |
+
+If `extended_reference` is configured (e.g. a style-to-dimension mapping for a personal note system), `Read` it and apply its style recipes on top of this table.
 
 ## Prompt Patterns
 
@@ -99,18 +138,18 @@ If ambiguous, make reasonable assumptions and proceed. Don't ping-pong questions
 
 ### Step 2, pick output dir
 
-Resolve in this order:
+Resolve in this order (values from Step 0):
 
 ```bash
-# 1. explicit override
-ASSETS="${GEN_IMAGE_OUTPUT_DIR:-}"
-
-# 2. bound to a note: an assets/ folder beside it
+# 1. note-bound + a resolver is configured: let it compute and return the dir
 #    NOTE="/path/to/My Note.md"
+#    ASSETS="$("$NOTE_RESOLVER" "$NOTE")"   # NOTE_RESOLVER = config output.note_resolver
+#
+# 2. note-bound, no resolver: an assets/ folder beside the note
 #    ASSETS="$(dirname "$NOTE")/assets"
-
-# 3. fallback: current directory
-ASSETS="${ASSETS:-$PWD}"
+#
+# 3. standalone: configured standalone dir, else cwd
+ASSETS="${STANDALONE_DIR:-$PWD}"      # STANDALONE_DIR = config output.standalone_dir
 
 mkdir -p "$ASSETS"
 ```
@@ -147,14 +186,16 @@ Don't parse `ls -la` columns for byte counts, use `stat`.
 
 ### Step 5, return image links
 
-Emit a code block the user can copy. For Obsidian, use wikilink embeds:
+Emit a code block the user can copy, in the configured `link_format`.
+
+For `wikilink` (Obsidian):
 
 ```
 ![[<slug>-1.png]]
 ![[<slug>-2.png]]
 ```
 
-For plain Markdown, use relative image links:
+For `markdown` (default):
 
 ```
 ![](assets/<slug>-1.png)
@@ -165,13 +206,13 @@ For single images, embed the link inline in the response.
 
 ## Cost Awareness
 
-Image models charge per image (roughly $0.01-$0.04 each depending on model). 10 images is on the order of a few tens of cents. Mention the rough total when batching 5 or more.
+If `[cost]` maps the active model id to a per-image price, use it for an exact total. Otherwise, image models charge per image (roughly $0.01-$0.04 each depending on model), so 10 images is on the order of a few tens of cents. Mention the rough total when batching 5 or more.
 
 ## Common Gotchas
 
 - **`.png` extension on JPEG files**: the model returns JPEG; the filename is what the user asked for. Harmless for most renderers.
 - **0-byte outputs**: the CLI may report success while the file is empty (transient API error or rate limit). Retry the failures individually.
-- **Text comes out garbled**: the active model isn't a Gemini pro-image model. There is no per-call `--model` flag, switch the global model with `gen-image --edit-config` (verify with `gen-image --show-config`).
+- **Text comes out garbled**: the active model isn't the text-heavy one. There is no per-call `--model` flag, switch the global model with `gen-image --edit-config` (verify with `gen-image --show-config`).
 - **Parallel failures**: sometimes one of N fails silently. After `wait`, run `stat` on every output and retry any 0-byte files.
 - **Config drift**: the user may have switched models earlier. Confirm with `--show-config` if results look wrong.
 
@@ -179,10 +220,13 @@ Image models charge per image (roughly $0.01-$0.04 each depending on model). 10 
 
 If the user asks to change the default model/provider:
 
-1. Read `~/.config/gen-image/config.toml`
+1. Read `~/.config/gen-image/config.toml` (the CLI's own config)
 2. Edit it with the `Edit` tool (not `sed`)
 3. Confirm with `gen-image --show-config`
 
+To change this skill's behavior (link format, output dirs, model map, routing), edit the skill config file (`references/skill-config.md` documents every key).
+
 ## Related
 
+- `references/skill-config.md`: the optional skill config schema (link format, output, models, cost, routing, extended reference).
 - `references/prompt-patterns.md`: reusable prompt templates, naming, and embedding rules.
