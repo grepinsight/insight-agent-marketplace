@@ -13,7 +13,7 @@
       "name": "gen-image",
       "source": "./plugins/gen-image",
       "description": "Generate educational/explanatory images from a text prompt via the gen-image CLI and get back ready-to-paste image links. Single or batch. Configurable output dirs, model map, and link format.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "category": "content",
       "keywords": [
         "image-generation",

@@ -89,17 +89,23 @@ gen-image --show-config | grep -E "provider|model"
 
 ## Style Selection
 
-| Style | Best for |
-|---|---|
-| `educational-cartoon` (default) | Metaphors, explainers with characters/scenes |
-| `diagram-alternative` | Infographics, bar charts, ladders, calendars, data viz |
-| `mnemonic` | Language learning, absurd visual puns |
-| `first-person` | Immersive POV experiences, "I was there" scenes, scaled perspectives, sensory immersion |
-| `manga-strip` | Educational storytelling, 2x4 panel comic narrative, step-by-step walkthroughs |
-| `vintage-blueprint` | History of inventions, underlying principles, design rationale, patent-style diagrams |
-| `custom` | Only when the user provides a full style spec |
+The CLI owns the style catalog (each preset is baked-in prompt engineering). Get the live list, never hardcode it:
 
-If `extended_reference` is configured (e.g. a style-to-dimension mapping for a personal note system), `Read` it and apply its style recipes on top of this table.
+```bash
+gen-image --list-styles
+```
+
+Your job is to map the request to the right preset. Rough heuristic (defer to whatever `--list-styles` actually reports):
+
+- text / labels / numbers / data → the infographic preset (`diagram-alternative`)
+- metaphor / explainer with characters → the cartoon preset (`educational-cartoon`, the default)
+- language mnemonic / visual pun → `mnemonic`
+- "you are there" POV scene → `first-person`
+- step-by-step walkthrough → a sequential-panel preset if present (`manga-strip`)
+- invention / mechanism / design rationale → a blueprint preset if present (`vintage-blueprint`)
+- user supplies a full style spec → `custom`
+
+If the preset you want isn't in `--list-styles`, fall back to `custom` with an inline spec, or add the preset to the CLI. If `extended_reference` is configured (e.g. a style-to-dimension mapping for a personal note system), `Read` it and apply its recipes on top of this heuristic.
 
 ## Prompt Patterns
 
