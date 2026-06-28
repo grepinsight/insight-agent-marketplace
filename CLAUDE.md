@@ -6,17 +6,16 @@ Contributor and agent guide for the **insight** Claude Code plugin marketplace. 
 
 A marketplace of small, focused Claude Code plugins. Each plugin wraps one capability (usually a single skill). Plugins are distributed two ways, and **both must keep working**:
 
-1. **Plugin marketplace**: `/plugin install <name>@insight`
-2. **npx skill installer**: `npx @grepinsight/<name>-skill`
+1. **Claude Code plugin marketplace**: `/plugin install <name>@insight`
+2. **`npx skills` (Vercel)**: `npx skills add grepinsight/insight-claude-marketplace -s <name>`
+
+Both read the **same** skill folder. The second works because the [Vercel skills](https://github.com/vercel-labs/skills) CLI discovers skills from the `.claude-plugin/` manifests, so there is **no separate npm package** to maintain. Do not re-introduce a hand-rolled installer.
 
 ## Layout
 
 ```
 .claude-plugin/
   marketplace.json              # marketplace manifest, lists every plugin
-package.json                    # npm package, the npx installer entry point
-bin/
-  install.mjs                   # generic skill installer (copies a skill folder into .claude/skills)
 plugins/
   <plugin>/
     .claude-plugin/
@@ -36,7 +35,7 @@ The skill folder at `plugins/<plugin>/skills/<skill>/` is the **single source** 
 2. Put the skill at `plugins/<name>/skills/<name>/SKILL.md` (+ `references/` if needed).
 3. Register it in `.claude-plugin/marketplace.json` under `plugins[]` (`name`, `source`, `description`, `version`).
 4. Write `plugins/<name>/README.md` per the format below.
-5. If the skill should be npx-installable, make sure `package.json` `files[]` includes its skill path, and that `bin/install.mjs` can target it (the current installer is single-skill; generalize it if adding a second).
+5. Verify discovery: `npx skills add . -s <name> --list` should list the new skill (the Vercel CLI reads the manifests, nothing else to wire up).
 6. Run the sanitization pass (below) before committing.
 
 ## Per-plugin README format (required)
@@ -49,10 +48,10 @@ Every `plugins/<name>/README.md` MUST have these sections, in this order:
 4. `## Configuration` — a table of env vars / config files and their effect (omit only if there are genuinely none).
 5. `## Install` — MUST document **both** channels as subsections:
    - `### From the insight marketplace` — `/plugin marketplace add ...` + `/plugin install <name>@insight`
-   - `### Via npx (skill only)` — `npx @grepinsight/<name>-skill` with `--project` and `--force` variants, and a note that npx installs the skill but not external prerequisites.
+   - `### Via npx skills (cross-agent)` — `npx skills add grepinsight/insight-claude-marketplace -s <name>` with the `-g` (global) and `-a <agent>` variants, plus a note that it installs the skill but not external prerequisites, and a pointer to the root README's "Installing for AI agents" section.
 6. `## License`.
 
-**The npx install block is mandatory.** A plugin README without a working `### Via npx (skill only)` subsection is incomplete.
+**The `npx skills` install block is mandatory.** A plugin README without a working `### Via npx skills (cross-agent)` subsection is incomplete. Always use the upstream [Vercel skills](https://github.com/vercel-labs/skills) CLI, never a hand-rolled npm package.
 
 ## Sanitization (public-shareable, no exceptions)
 
@@ -72,5 +71,5 @@ grep -rniE '<work-domain>|/Users/|<your-private-vault-name>|<work-email>' . --in
 ## Conventions
 
 - Commit style: conventional commits (`feat:`, `fix:`, `docs:`), no AI authorship attribution.
-- Keep `version` in sync across `plugin.json`, the marketplace entry, and (for npx) `package.json` when a plugin changes.
+- Keep `version` in sync across `plugin.json` and the marketplace entry when a plugin changes.
 - Skill frontmatter: `name` (lowercase, kebab-case), `description`, optional `allowed-tools`, `license`. No private/vault-specific metadata fields.

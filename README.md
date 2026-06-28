@@ -12,7 +12,7 @@ A small marketplace of focused [Claude Code](https://docs.claude.com/en/docs/cla
 
 There are two ways to get a plugin from here. Use whichever fits.
 
-### Option A, plugin marketplace (native)
+### Option A, Claude Code plugin marketplace (native)
 
 Add this marketplace, then install a plugin from it:
 
@@ -27,22 +27,47 @@ Or point at a local clone during development:
 /plugin marketplace add /path/to/insight-claude-marketplace
 ```
 
-### Option B, npx (install just the skill)
+### Option B, `npx skills` (cross-agent, recommended)
 
-If you don't use the plugin system, install a plugin's skill straight into your Claude skills directory with `npx`. This copies only the `SKILL.md` folder, no plugin registry involved.
+This repo is also a [Vercel **skills**](https://github.com/vercel-labs/skills) package. The `skills` CLI installs the skill into any supported agent (Claude Code, Codex, Cursor, OpenClaw, Hermes, and ~70 more), discovering it straight from the plugin manifests, no extra structure needed.
 
 ```bash
-# install for the current user (~/.claude/skills)
-npx @grepinsight/gen-image-skill
+# interactive picker (auto-detects your agent + scope)
+npx skills add grepinsight/insight-claude-marketplace
 
-# install into the current project only (./.claude/skills)
-npx @grepinsight/gen-image-skill --project
+# install a specific skill, non-interactive
+npx skills add grepinsight/insight-claude-marketplace -s gen-image -y
 
-# overwrite an existing install
-npx @grepinsight/gen-image-skill --force
+# preview what's in the repo without installing
+npx skills add grepinsight/insight-claude-marketplace --list
 ```
 
-After installing either way, restart Claude Code (or reload plugins) so the new skill is picked up. Note the npx route installs the skill, not the underlying `gen-image` CLI, see the plugin's README for prerequisites.
+`-g` installs globally (user-level) instead of into the current project. After installing either way, restart your agent so the new skill is picked up. Note: installing the skill does **not** install the underlying `gen-image` CLI, see the [plugin's README](plugins/gen-image#prerequisites) for prerequisites.
+
+## Installing for AI agents
+
+To teach an autonomous agent to install this skill into itself, give it the `npx skills` command with an explicit `--agent`. The CLI knows where each agent keeps its skills, so no path-wrangling is required.
+
+```bash
+# OpenClaw, global (lands in ~/.openclaw/skills/gen-image)
+npx skills add grepinsight/insight-claude-marketplace -s gen-image -a openclaw -g -y --copy
+
+# Hermes, global (lands in ~/.hermes/skills/gen-image)
+npx skills add grepinsight/insight-claude-marketplace -s gen-image -a hermes-agent -g -y --copy
+
+# both at once, project-scoped (OpenClaw -> ./skills, Hermes -> ./.hermes/skills)
+npx skills add grepinsight/insight-claude-marketplace -s gen-image -a openclaw -a hermes-agent -y --copy
+```
+
+| Agent | `--agent` id | Global path | Project path |
+|---|---|---|---|
+| OpenClaw | `openclaw` | `~/.openclaw/skills/` | `./skills/` |
+| Hermes | `hermes-agent` | `~/.hermes/skills/` | `./.hermes/skills/` |
+
+Notes for agents:
+- Use `--copy` (not the default symlink) when the agent runs on a host that doesn't share this repo's filesystem, it writes a standalone copy.
+- `-y` skips all prompts so the command runs unattended.
+- After install, the skill still needs the `gen-image` CLI on `PATH` and an API key (`GEMINI_API_KEY` / `GOOGLE_API_KEY` / `OPENAI_API_KEY`). See the [plugin README](plugins/gen-image#prerequisites).
 
 ## Layout
 

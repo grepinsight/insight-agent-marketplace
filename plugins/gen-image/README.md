@@ -47,17 +47,17 @@ The model itself is global CLI config (`gen-image --edit-config`), there is no p
 /plugin install gen-image@insight
 ```
 
-### Via npx (skill only)
+### Via `npx skills` (cross-agent)
 
-Copies the skill into your Claude skills directory without the plugin registry. Does **not** install the `gen-image` CLI, see Prerequisites above.
+Install the skill into any supported agent with the [Vercel skills](https://github.com/vercel-labs/skills) CLI. Does **not** install the `gen-image` CLI, see Prerequisites above.
 
 ```bash
-npx @grepinsight/gen-image-skill            # user-wide (~/.claude/skills)
-npx @grepinsight/gen-image-skill --project  # this project only (./.claude/skills)
-npx @grepinsight/gen-image-skill --force    # overwrite an existing install
+npx skills add grepinsight/insight-claude-marketplace -s gen-image -y        # current agent + scope
+npx skills add grepinsight/insight-claude-marketplace -s gen-image -g -y     # global (user-level)
+npx skills add grepinsight/insight-claude-marketplace -s gen-image -a openclaw -g -y --copy   # a specific agent
 ```
 
-Restart Claude Code afterward so the skill is picked up.
+Restart your agent afterward so the skill is picked up. For installing into OpenClaw / Hermes agents, see [Installing for AI agents](../../README.md#installing-for-ai-agents) in the root README.
 
 ## License
 
