@@ -6,7 +6,7 @@
     "name": "grepinsight",
     "url": "https://github.com/grepinsight"
   },
-  "homepage": "https://github.com/grepinsight/insight-claude-marketplace",
+  "homepage": "https://github.com/grepinsight/insight-agent-marketplace",
   "license": "MIT",
   "keywords": ["image-generation", "illustration", "obsidian", "infographic", "gemini", "openai"]
 }

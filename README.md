@@ -1,6 +1,6 @@
-# insight, a Claude Code plugin marketplace
+# insight, a cross-agent skill marketplace
 
-A small marketplace of focused [Claude Code](https://docs.claude.com/en/docs/claude-code) plugins.
+A small marketplace of focused agent skills. Each is packaged as a [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin (Claude Code is the primary client), but the same skill installs into any of ~70 supported agents (Codex, Cursor, OpenClaw, Hermes, and more) via [`npx skills`](https://github.com/vercel-labs/skills).
 
 ## Plugins
 
@@ -17,14 +17,14 @@ There are two ways to get a plugin from here. Use whichever fits.
 Add this marketplace, then install a plugin from it:
 
 ```
-/plugin marketplace add grepinsight/insight-claude-marketplace
+/plugin marketplace add grepinsight/insight-agent-marketplace
 /plugin install gen-image@insight
 ```
 
 Or point at a local clone during development:
 
 ```
-/plugin marketplace add /path/to/insight-claude-marketplace
+/plugin marketplace add /path/to/insight-agent-marketplace
 ```
 
 ### Option B, `npx skills` (cross-agent, recommended)
@@ -35,20 +35,20 @@ Install **one plugin at a time** with `-s <skill>` (this is the recommended defa
 
 ```bash
 # install just the gen-image skill, non-interactive
-npx skills add grepinsight/insight-claude-marketplace -s gen-image -y
+npx skills add grepinsight/insight-agent-marketplace -s gen-image -y
 
 # preview what's in the repo without installing
-npx skills add grepinsight/insight-claude-marketplace --list
+npx skills add grepinsight/insight-agent-marketplace --list
 ```
 
 Other granularities, if you want them:
 
 ```bash
 # interactive picker (choose which skills to install)
-npx skills add grepinsight/insight-claude-marketplace
+npx skills add grepinsight/insight-agent-marketplace
 
 # every skill in the repo at once (explicit opt-in)
-npx skills add grepinsight/insight-claude-marketplace --all
+npx skills add grepinsight/insight-agent-marketplace --all
 ```
 
 `-g` installs globally (user-level) instead of into the current project. After installing, restart your agent so the new skill is picked up. Note: installing the skill does **not** install the underlying `gen-image` CLI, see the [plugin's README](plugins/gen-image#prerequisites) for prerequisites.
@@ -59,13 +59,13 @@ To teach an autonomous agent to install this skill into itself, give it the `npx
 
 ```bash
 # OpenClaw, global (lands in ~/.openclaw/skills/gen-image)
-npx skills add grepinsight/insight-claude-marketplace -s gen-image -a openclaw -g -y --copy
+npx skills add grepinsight/insight-agent-marketplace -s gen-image -a openclaw -g -y --copy
 
 # Hermes, global (lands in ~/.hermes/skills/gen-image)
-npx skills add grepinsight/insight-claude-marketplace -s gen-image -a hermes-agent -g -y --copy
+npx skills add grepinsight/insight-agent-marketplace -s gen-image -a hermes-agent -g -y --copy
 
 # both at once, project-scoped (OpenClaw -> ./skills, Hermes -> ./.hermes/skills)
-npx skills add grepinsight/insight-claude-marketplace -s gen-image -a openclaw -a hermes-agent -y --copy
+npx skills add grepinsight/insight-agent-marketplace -s gen-image -a openclaw -a hermes-agent -y --copy
 ```
 
 | Agent | `--agent` id | Global path | Project path |

@@ -43,7 +43,7 @@ The model itself is global CLI config (`gen-image --edit-config`), there is no p
 ### From the `insight` marketplace
 
 ```
-/plugin marketplace add grepinsight/insight-claude-marketplace
+/plugin marketplace add grepinsight/insight-agent-marketplace
 /plugin install gen-image@insight
 ```
 
@@ -52,9 +52,9 @@ The model itself is global CLI config (`gen-image --edit-config`), there is no p
 Install the skill into any supported agent with the [Vercel skills](https://github.com/vercel-labs/skills) CLI. Does **not** install the `gen-image` CLI, see Prerequisites above.
 
 ```bash
-npx skills add grepinsight/insight-claude-marketplace -s gen-image -y        # current agent + scope
-npx skills add grepinsight/insight-claude-marketplace -s gen-image -g -y     # global (user-level)
-npx skills add grepinsight/insight-claude-marketplace -s gen-image -a openclaw -g -y --copy   # a specific agent
+npx skills add grepinsight/insight-agent-marketplace -s gen-image -y        # current agent + scope
+npx skills add grepinsight/insight-agent-marketplace -s gen-image -g -y     # global (user-level)
+npx skills add grepinsight/insight-agent-marketplace -s gen-image -a openclaw -g -y --copy   # a specific agent
 ```
 
 Restart your agent afterward so the skill is picked up. For installing into OpenClaw / Hermes agents, see [Installing for AI agents](../../README.md#installing-for-ai-agents) in the root README.

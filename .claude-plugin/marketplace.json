@@ -5,7 +5,7 @@
     "url": "https://github.com/grepinsight"
   },
   "metadata": {
-    "description": "A small marketplace of focused Claude Code plugins.",
+    "description": "A small marketplace of focused agent skills, packaged as Claude Code plugins and installable cross-agent via npx skills.",
     "version": "0.1.0"
   },
   "plugins": [
