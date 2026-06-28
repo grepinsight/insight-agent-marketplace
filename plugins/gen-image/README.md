@@ -40,12 +40,24 @@ The model itself is global CLI config (`gen-image --edit-config`), there is no p
 
 ## Install
 
-From the `insight` marketplace:
+### From the `insight` marketplace
 
 ```
 /plugin marketplace add grepinsight/insight-claude-marketplace
 /plugin install gen-image@insight
 ```
+
+### Via npx (skill only)
+
+Copies the skill into your Claude skills directory without the plugin registry. Does **not** install the `gen-image` CLI, see Prerequisites above.
+
+```bash
+npx @grepinsight/gen-image-skill            # user-wide (~/.claude/skills)
+npx @grepinsight/gen-image-skill --project  # this project only (./.claude/skills)
+npx @grepinsight/gen-image-skill --force    # overwrite an existing install
+```
+
+Restart Claude Code afterward so the skill is picked up.
 
 ## License
 
