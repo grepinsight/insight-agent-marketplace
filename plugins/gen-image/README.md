@@ -13,7 +13,7 @@ A `gen-image` skill that Claude Code invokes when you say things like:
 
 The skill picks a sensible style, writes good prompts (see `skills/gen-image/references/prompt-patterns.md`), generates in parallel for batches, verifies the outputs, and returns image links ready to paste into a note or doc.
 
-**Transcript Mode**: hand it a transcript (raw or speaker-resolved, e.g. an auto-podcast) and it segments the content into distinct topics, distills each to its single most salient visual, and generates one image per topic, defaulting to the top few rather than one image per line. Requires the `gen-image` CLI ≥ 0.6.0 for the bundled `spectrum-triad` / `metaphor-mapping` / `thought-experiment` templates (with inline fallbacks).
+**Transcript Mode**: hand it a transcript (raw or speaker-resolved, e.g. an auto-podcast) and it segments the content into distinct topics, distills each to its single most salient visual, and generates one image for every topic above a visual-density threshold (skipping transitions and banter) rather than one image per line. Requires the `gen-image` CLI ≥ 0.6.0 for the bundled `spectrum-triad` / `metaphor-mapping` / `thought-experiment` templates (with inline fallbacks).
 
 ## Prerequisites
 

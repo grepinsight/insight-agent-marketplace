@@ -9,8 +9,9 @@ All notable changes to the gen-image plugin are documented here. Format follows
 - **Transcript Mode** in `SKILL.md`: turn a transcript (raw or speaker-resolved,
   e.g. an auto-podcast) into a set of per-topic images via a segment → distill →
   generate pipeline. Segments by idea (not speaker), ranks topics by visual
-  density, distills each to a single salient frame, and defaults to the top 3-4
-  topics rather than one image per topic.
+  density, distills each to a single salient frame, and generates one image for
+  every topic above a visual-density threshold (Medium or above), skipping
+  transitions and banter, rather than one image per topic.
 - Three transcript-oriented prompt patterns in `references/prompt-patterns.md`:
   spectrum-triad (3-point spectrum), metaphor-mapping (concept rendered as its
   metaphor with annotated callouts), and thought-experiment (two diverging

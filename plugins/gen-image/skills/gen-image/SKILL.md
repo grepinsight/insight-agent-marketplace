@@ -218,9 +218,12 @@ Read the whole transcript, then partition it into **distinct, non-overlapping to
 - Each topic is one self-contained idea that would benefit from its *own* image.
 - **Merge** scattered turns that circle the same idea into one topic.
 - **Drop** pure banter, filler, intros/outros, and "mm-hmm" exchanges, they carry no visual.
-- **Rank** topics by *visual density*: how concretely the idea can be shown (a vivid metaphor, a contrast, a thought experiment, a number) ranks high; abstract throat-clearing ranks low.
+- **Score** each topic for *visual density*, how concretely the idea can be shown:
+  - **High**, depict immediately: a vivid metaphor, a 2- or 3-way contrast, a thought experiment, a concrete scene, a specific number/ratio.
+  - **Medium**, depictable with one concrete handle: an abstract idea that has a single clear visual anchor.
+  - **Low**, skip: transitions, restatements, meta-commentary, banter.
 
-Produce a short ordered table (topic, timecode span if present, the visual hook). This is the artifact the user reviews before any image is generated.
+Produce a short ordered table (topic, timecode span if present, visual hook, density). This is the artifact the user reviews before any image is generated.
 
 ### Step T2, Distill each chosen topic
 
@@ -236,7 +239,8 @@ If a topic has no concrete visual after distillation, it was mis-ranked in T1, d
 
 ### Step T3, Select and generate
 
-- **Default to the top 3-4 topics**, not all of them. A long transcript has ~10 topics; the user rarely wants 10 images. Offer `--top N` / "all" if they want more.
+- **Default: generate for every topic at the visual-density threshold (Medium or above), no fixed count.** The threshold, not a top-N cap, decides how many images you make, so a dense transcript yields many and a thin one yields few. Skip Low topics entirely.
+- Because the count is open-ended, **state the topic count and rough cost before generating** when it clears 5 images (see Cost Awareness), and let the user move the bar: "only the strongest" / "High only" raises the threshold, `--top N` caps the count, "all topics" includes Low.
 - Map each distilled topic to a template + style (the `gen-image` CLI ships templates tuned for this content, see the table below), then generate via the **Workflow → Step 3** primitive (parallel, verified).
 - Return links in transcript order. If the transcript is a note, offer to embed each image above the section it illustrates (per the embedding rules in `references/prompt-patterns.md`).
 
