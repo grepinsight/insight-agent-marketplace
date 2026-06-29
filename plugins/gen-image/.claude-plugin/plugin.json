@@ -1,7 +1,7 @@
 {
   "name": "gen-image",
-  "version": "0.3.1",
-  "description": "Generate one or more educational/explanatory images from a text prompt via the gen-image CLI and return ready-to-paste image links. For explicit, user-requested generation (single or batch).",
+  "version": "0.4.0",
+  "description": "Generate one or more educational/explanatory images from a text prompt via the gen-image CLI and return ready-to-paste image links. For explicit, user-requested generation (single or batch), and for turning a transcript (raw or speaker-resolved, e.g. an auto-podcast) into per-topic images.",
   "author": {
     "name": "grepinsight",
     "url": "https://github.com/grepinsight"
