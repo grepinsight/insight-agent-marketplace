@@ -67,6 +67,45 @@ Supporting visual: <bar chart / before-after / ratio diagram>.
 Two-color palette (<color1> for baseline, <color2> for highlight). Clean, minimal.
 ```
 
+## Transcript-Oriented Patterns
+
+These three recur in interview/podcast/deep-dive transcripts, where ideas arrive as spectrums, vivid metaphors, and thought experiments. Each has a matching first-class template in the `gen-image` CLI (≥ 0.6.0), prefer the CLI template (`gen-image --template <name> --var ...`) and fall back to the inline form below if the template is absent.
+
+### Pattern: Spectrum / Triad (3-way)
+
+CLI template: `spectrum-triad`. Use for a three-point spectrum (fragile/robust/antifragile, additive/neutral/multiplicative). The split-panel above only handles two.
+
+```
+A three-column infographic titled '<spectrum name>'.
+LEFT '<low end> — <one-line behavior>': <concrete figure/scene>. caption '<consequence>'.
+CENTER '<mid> — <behavior>': <figure/scene>. caption '<consequence>'.
+RIGHT '<high end> — <behavior>': <figure/scene>. caption '<consequence>'.
+Color-grade red → neutral → green. Bottom gradient arrow labeled '<the axis> →'.
+Flat infographic, bold labels.
+```
+
+### Pattern: Metaphor-Made-Literal
+
+CLI template: `metaphor-mapping`. Use when one vivid central metaphor carries the idea (crystal ball, Damocles' sword, broken weather report). Render the abstraction *as* its metaphor and annotate the mapping. (Distinct from `educational-metaphor`, which carries no text, this one shows the metaphor→meaning callouts.)
+
+```
+A single striking illustration of '<the metaphor>' as the literal embodiment of '<abstract concept>'.
+Show: <the concrete metaphor scene in detail>. Annotate 2-3 parts with small callouts mapping
+metaphor→concept: '<metaphor part>' = '<what it means>'. One focal point, clean, minimal text.
+```
+
+### Pattern: Thought-Experiment / Two-Outcome
+
+CLI template: `thought-experiment`. Use for "imagine 100 people in a casino..." passages, a described experiment whose point is two diverging outcomes (ensemble vs time average).
+
+```
+A two-panel 'thought experiment' diagram titled '<experiment name>'.
+SETUP banner across top: '<the rules in one line>'.
+LEFT panel '<scenario A>': <visual of A> → outcome label '<result A>' (green/up).
+RIGHT panel '<scenario B>': <visual of B> → outcome label '<result B>' (red/down).
+Emphasize the divergence between the two. Clean diagram style, legible numbers.
+```
+
 ## Dimension-Specific Recipes
 
 Pair these prompt fragments with the right style to cover common explanatory dimensions of a concept.

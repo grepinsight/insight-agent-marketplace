@@ -1,6 +1,6 @@
 ---
 name: gen-image
-description: "Generate one or more images via the gen-image CLI and return image links ready to paste into notes or docs. For explicit image-generation requests, standalone or batch. Use when the user says '/gen-image', 'generate an image of X', 'make me N images about Y', or 'generate visuals for this'."
+description: "Generate one or more images via the gen-image CLI and return image links ready to paste into notes or docs. For explicit image-generation requests, standalone or batch, AND for turning a transcript (raw or speaker-resolved, e.g. an auto-podcast) into a set of per-topic images. Use when the user says '/gen-image', 'generate an image of X', 'make me N images about Y', 'generate visuals for this', or 'make images for this podcast/transcript/interview'."
 license: MIT
 allowed-tools:
   - Read
@@ -36,6 +36,7 @@ If `gen-image` is not found, tell the user to install it and set a key, then sto
 - "make me 5 images showing Y"
 - "regenerate the images in this note" (after a model switch)
 - "create visuals for this concept"
+- "make images for this podcast / transcript / interview" → see **Transcript Mode** below
 
 ## Step 0, Load Skill Config (do this first)
 
@@ -116,7 +117,7 @@ Always structure prompts with:
 3. **Color palette**: name 2-3 colors, e.g. "navy + gold + green"
 4. **Style hint at end**: "flat infographic style, clean typography, no photorealism"
 
-Vague prompts produce garbage. See `references/prompt-patterns.md` for reusable templates (split-panel, process flow, analogy mapping, system, problem-viz, data-insight) plus naming and embedding rules.
+Vague prompts produce garbage. See `references/prompt-patterns.md` for reusable templates (split-panel, process flow, analogy mapping, system, problem-viz, data-insight, plus the transcript-oriented spectrum-triad / metaphor-mapping / thought-experiment patterns) plus naming and embedding rules.
 
 ## Workflow
 
@@ -198,6 +199,58 @@ For `markdown` (default):
 ```
 
 For single images, embed the link inline in the response.
+
+## Transcript Mode (segment → distill → generate)
+
+When the input is a **transcript** rather than a single concept, generation is not one-shot. A transcript carries many distinct ideas, and the goal is one strong image per *idea worth showing*, not one image of "the transcript." This mode wraps the generation primitive above with two planning steps in front of it.
+
+Handles either input shape:
+
+- **Raw transcript**: plain text, no speaker labels.
+- **Speaker-resolved transcript**: lines tagged with speakers/timestamps (e.g. `**[02:15] Host A:** ...`), as produced by an auto-podcast / diarization pipeline.
+
+Speaker labels and timestamps are **navigation aids, not segment boundaries**. Strip them when reading for content. Topics are defined by *idea*, not by who is talking, so a topic routinely spans many speaker turns.
+
+### Step T1, Segment into topics
+
+Read the whole transcript, then partition it into **distinct, non-overlapping topics**:
+
+- Each topic is one self-contained idea that would benefit from its *own* image.
+- **Merge** scattered turns that circle the same idea into one topic.
+- **Drop** pure banter, filler, intros/outros, and "mm-hmm" exchanges, they carry no visual.
+- **Rank** topics by *visual density*: how concretely the idea can be shown (a vivid metaphor, a contrast, a thought experiment, a number) ranks high; abstract throat-clearing ranks low.
+
+Produce a short ordered table (topic, timecode span if present, the visual hook). This is the artifact the user reviews before any image is generated.
+
+### Step T2, Distill each chosen topic
+
+For each topic you will illustrate, extract the **single most salient frame**, not a summary of everything said:
+
+| Field | What it captures |
+|---|---|
+| `core_message` | The one sentence the image must make land |
+| `the_one_visual` | The concrete scene/metaphor that carries it |
+| `labels[]` | Every word that must appear legibly (headers, captions, numbers) |
+
+If a topic has no concrete visual after distillation, it was mis-ranked in T1, drop it rather than forcing a generic illustration.
+
+### Step T3, Select and generate
+
+- **Default to the top 3-4 topics**, not all of them. A long transcript has ~10 topics; the user rarely wants 10 images. Offer `--top N` / "all" if they want more.
+- Map each distilled topic to a template + style (the `gen-image` CLI ships templates tuned for this content, see the table below), then generate via the **Workflow → Step 3** primitive (parallel, verified).
+- Return links in transcript order. If the transcript is a note, offer to embed each image above the section it illustrates (per the embedding rules in `references/prompt-patterns.md`).
+
+### Topic shape → template/style
+
+| Topic shape (common in interviews) | CLI template | Style |
+|---|---|---|
+| 3-point spectrum (fragile/robust/antifragile, low/mid/high) | `spectrum-triad` | `diagram-alternative` |
+| One vivid central metaphor (crystal ball, Damocles' sword) | `metaphor-mapping` | `educational-cartoon` |
+| "Imagine 100 people..." two-outcome thought experiment | `thought-experiment` | `diagram-alternative` |
+| 2-way comparison (X vs Y, before/after) | (inline) split-panel | `diagram-alternative` |
+| Step-by-step process / mechanism | (inline) process-flow | `manga-strip` |
+
+These templates require the `gen-image` CLI **≥ 0.6.0**. Verify with `gen-image --list-templates`; if a template is absent, fall back to the inline prompt patterns in `references/prompt-patterns.md` with the same style. Run `gen-image --show-template <name>` to see each template's `--var` slots.
 
 ## Cost Awareness
 
